@@ -43,7 +43,7 @@ async function server() {
             const result = await tourplanCollection.find({}).toArray()
             res.send(result)
         })
-
+        
     
        //POST API -users
         app.post('/users', async (req, res) => {
@@ -59,14 +59,56 @@ async function server() {
             const result = await touristCollection.find({}).toArray()
             res.send(result)
         })
+
         //myZone
         app.get('/myzones/:email', async (req, res) => {
             const result = await touristCollection.find({email: req.params.email}).toArray()
             res.send(result)
         })
 
-        //delete
+        //find single user for update
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log('peye gechi', id);
+            const query = { _id: ObjectId(id) };
+            const result = await touristCollection.findOne(query)
+            res.send(result)
+        })
+
+        //updated API
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id
+            const newUser = req.body
+            console.log('updting not dating', id);
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                  name: newUser.name,
+                  email: newUser.email,
+                  phone: newUser.phone
+                },
+            };
+            const result = await touristCollection.updateOne(filter, updateDoc, options)
+            res.json(result)
+        })
+
+        //Delete for tourism --all zones
+        app.delete('/alllzones/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await tourplanCollection.deleteOne(query)
+            res.json(result)
+        })
+        //delete--user selected zones
         app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await touristCollection.deleteOne(query)
+            res.json(result)
+        })
+        //delete--total users
+        app.delete('/total/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await touristCollection.deleteOne(query)
