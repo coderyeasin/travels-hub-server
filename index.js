@@ -29,7 +29,6 @@ async function server() {
         const tourplanCollection = database.collection('tourism')
         const touristCollection = client.db('tourist').collection('users')
 
-        // console.log('database is connected');
             //POST API -users
             app.post('/tourism', async (req, res) => {
                 const newUser = req.body;
